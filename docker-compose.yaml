@@ -1,0 +1,79 @@
+version: '3'
+services:
+  artifactory:
+    image: releases-docker.jfrog.io/jfrog/artifactory-oss:latest
+    container_name: artifactory
+    environment:
+      - 8082:8082
+    networks:
+      - frog
+    ports:
+      - 8082:8082
+      - 8081:8081 
+    volumes:
+      - artifactory:/var/opt/jfrog/artifactory
+      - /etc/localtime:/etc/localtime:ro
+    restart: always
+    logging:
+      driver: json-file
+      options:
+        max-size: "50m"
+        max-file: "10"
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 32000
+        hard: 40000
+
+  nginx:
+    image: releases-docker.jfrog.io/jfrog/nginx-artifactory:latest
+    container_name: nginx
+    depends_on:
+      - artifactory
+    networks:
+      - frog
+    ports:
+      - 80:80
+      - 443:443 
+    volumes:
+      - nginx:/var/opt/jfrog/nginx
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      #change domain name
+      - ART_BASE_URL=http://jfrog.fatlan.com:8082/artifactory
+      - NGINX_LOG_ROTATE_COUNT=${NGINX_LOG_ROTATE_COUNT}
+      - NGINX_LOG_ROTATE_SIZE=${NGINX_LOG_ROTATE_SIZE}
+      - SSL=true
+    restart: always
+    logging:
+      driver: json-file
+      options:
+        max-size: "50m"
+        max-file: "10"
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 32000
+        hard: 40000
+
+volumes:
+  artifactory:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${PWD}/data/artifactory/
+  nginx:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${PWD}/data/nginx/
+
+networks:
+  frog:
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.77.0/24
+
