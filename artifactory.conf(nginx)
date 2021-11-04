@@ -44,7 +44,7 @@ server {
     }
 
     location ~ ^/artifactory/ {
-        proxy_pass    http://localhost:8081;
+        proxy_pass    http://jfrog.fatlan.com:8081;
     }
   }
 }
