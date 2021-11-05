@@ -22,4 +22,6 @@ enter domain
 admin:password
 ~~~
 
+**NoT**: compose'deki jfrog artifactory portları expose edilmemiştir, erişim nginx 443 üzerinden yapılmaktadır, isterseniz '#' işaretini kaldırıp ayrıca portları expose edip nginx'e uğramadan da direk portlar üzerinden jfrog artifactory çağırabilirsiniz. Ya da nginx'i devre dışı bırakıp o şekilde de kullanavilirsiniz, bir diğeri de nginx'i iptal edip trafiği farklı bir proxy üzerinden de geçirebilirsiniz.
+
 ref: [jfrog](https://www.jfrog.com/confluence/display/JFROG/Installing+Artifactory)
